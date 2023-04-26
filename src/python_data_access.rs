@@ -255,12 +255,12 @@ pub fn format_variable<I, P>(process: &P, version: &Version, addr: usize, max_le
     } else if flags & PY_TPFLAGS_DICT_SUBCLASS != 0 {
         if version.major == 3 && version.minor >= 6 {
             let mut values = Vec::new();
-            let mut remaining = max_length - 2;
+            let mut remaining = isize::max_value();
             for entry in DictIterator::from(process, version, addr)? {
                 let (key, value) = entry?;
                 let key = format_variable::<I, P>(process, version, key, remaining)?;
                 let value = format_variable::<I, P>(process, version, value, remaining)?;
-                remaining -= (key.len() + value.len()) as isize + 4;
+                // remaining -= (key.len() + value.len()) as isize + 4;
                 if remaining <= 5 {
                     values.push("...".to_owned());
                     break;
